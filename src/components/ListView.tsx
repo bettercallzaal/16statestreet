@@ -1,0 +1,135 @@
+'use client';
+
+import { useMemo } from 'react';
+import type { ETHDenverEvent, ReactionEmoji } from '@/lib/types';
+import { formatDateLabel } from '@/lib/utils';
+import { EventCard } from './EventCard';
+
+interface ListViewProps {
+  events: ETHDenverEvent[];
+  totalCount: number;
+  itinerary?: Set<string>;
+  onItineraryToggle?: (eventId: string) => void;
+  friendsCountByEvent?: Map<string, number>;
+  friendsByEvent?: Map<string, { userId: string; displayName: string }[]>;
+  checkedInFriendsByEvent?: Map<string, { userId: string; displayName: string }[]>;
+  checkInCounts?: Map<string, number>;
+  reactionsByEvent?: Map<string, { emoji: ReactionEmoji; count: number; reacted: boolean }[]>;
+  onToggleReaction?: (eventId: string, emoji: ReactionEmoji) => void;
+  commentCounts?: Map<string, number>;
+  rsvpEventIds?: Set<string>;
+  onEventClick?: (event: ETHDenverEvent) => void;
+}
+
+interface DateGroup {
+  dateISO: string;
+  label: string;
+  events: ETHDenverEvent[];
+}
+
+function sortByStartTime(a: ETHDenverEvent, b: ETHDenverEvent): number {
+  if (a.isAllDay && !b.isAllDay) return -1;
+  if (!a.isAllDay && b.isAllDay) return 1;
+  if (a.isAllDay && b.isAllDay) return a.name.localeCompare(b.name);
+
+  const timeToMinutes = (t: string): number => {
+    const normalized = t.toLowerCase().trim();
+    const match = normalized.match(/(\d{1,2}):?(\d{2})?\s*(am?|pm?)?/i);
+    if (!match) return 0;
+    let hour = parseInt(match[1]);
+    const min = match[2] ? parseInt(match[2]) : 0;
+    const isPM = match[3] && match[3].startsWith('p');
+    const isAM = match[3] && match[3].startsWith('a');
+    if (isPM && hour !== 12) hour += 12;
+    if (isAM && hour === 12) hour = 0;
+    return hour * 60 + min;
+  };
+
+  return timeToMinutes(a.startTime) - timeToMinutes(b.startTime);
+}
+
+export function ListView({
+  events,
+  totalCount,
+  itinerary,
+  onItineraryToggle,
+  friendsCountByEvent,
+  friendsByEvent,
+  checkedInFriendsByEvent,
+  checkInCounts,
+  reactionsByEvent,
+  onToggleReaction,
+  commentCounts,
+  rsvpEventIds,
+  onEventClick,
+}: ListViewProps) {
+  const dateGroups: DateGroup[] = useMemo(() => {
+    const groupMap = new Map<string, ETHDenverEvent[]>();
+
+    for (const event of events) {
+      const key = event.dateISO || 'unknown';
+      if (!groupMap.has(key)) {
+        groupMap.set(key, []);
+      }
+      groupMap.get(key)!.push(event);
+    }
+
+    return Array.from(groupMap.entries())
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([dateISO, groupEvents]) => ({
+        dateISO,
+        label:
+          dateISO === 'unknown' ? 'Date TBD' : formatDateLabel(dateISO),
+        events: groupEvents.sort(sortByStartTime),
+      }));
+  }, [events]);
+
+  if (events.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-slate-500">
+        <p className="text-lg font-medium">No events found</p>
+        <p className="text-sm mt-1">Try adjusting your filters</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto px-2 sm:px-4 pb-8">
+      {dateGroups.map((group) => (
+        <section key={group.dateISO} className="mb-6">
+          <div className="sticky top-0 z-20 bg-slate-900 py-2 -mx-2 px-2 sm:-mx-4 sm:px-4 border-b border-slate-800">
+            <div className="flex items-center justify-between">
+              <h2 className="text-base font-bold text-white">
+                {group.label}
+              </h2>
+              <span className="text-xs text-slate-500 font-medium">
+                {group.events.length} event{group.events.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-3 mt-3">
+            {group.events.map((event) => (
+              <EventCard
+                key={event.id}
+                event={event}
+                isInItinerary={itinerary?.has(event.id)}
+                onItineraryToggle={onItineraryToggle}
+                friendsCount={friendsCountByEvent?.get(event.id)}
+                friendsGoing={friendsByEvent?.get(event.id)}
+                checkedInFriends={checkedInFriendsByEvent?.get(event.id)}
+                checkInCount={checkInCounts?.get(event.id)}
+                reactions={reactionsByEvent?.get(event.id)}
+                onToggleReaction={onToggleReaction}
+                commentCount={commentCounts?.get(event.id)}
+                isRegistered={rsvpEventIds?.has(event.id)}
+                attendeeCount={event.registeredCount}
+                onCardClick={onEventClick}
+              />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  );
+}

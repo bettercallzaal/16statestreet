@@ -1,0 +1,182 @@
+[
+  {
+    "id": "booking-1",
+    "spaceId": "space-1",
+    "title": "Open Studio: First Sunday Drop-In",
+    "date": "2026-03-01",
+    "startHour": 13,
+    "endHour": 16,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "open-studio"
+  },
+  {
+    "id": "booking-2",
+    "spaceId": "space-2",
+    "title": "Gelatin Printing: Spring Botanicals",
+    "date": "2026-03-03",
+    "startHour": 18,
+    "endHour": 20,
+    "bookedBy": "Karin Otto",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-3",
+    "spaceId": "space-1",
+    "title": "Open Studio Night",
+    "date": "2026-03-04",
+    "startHour": 17,
+    "endHour": 19,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "open-studio"
+  },
+  {
+    "id": "booking-4",
+    "spaceId": "space-4",
+    "title": "First Friday Art Walk",
+    "date": "2026-03-06",
+    "startHour": 17,
+    "endHour": 20,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "exhibition"
+  },
+  {
+    "id": "booking-5",
+    "spaceId": "space-1",
+    "title": "Open Studio: Weekend Drop-In",
+    "date": "2026-03-08",
+    "startHour": 10,
+    "endHour": 14,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "open-studio"
+  },
+  {
+    "id": "booking-6",
+    "spaceId": "space-2",
+    "title": "Gelatin Printing: Layered Landscapes",
+    "date": "2026-03-10",
+    "startHour": 18,
+    "endHour": 20,
+    "bookedBy": "Karin Otto",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-7",
+    "spaceId": "space-3",
+    "title": "Slow Stitch Circle",
+    "date": "2026-03-11",
+    "startHour": 18,
+    "endHour": 20,
+    "bookedBy": "Colleen Ross",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-8",
+    "spaceId": "space-1",
+    "title": "Open Studio Night",
+    "date": "2026-03-11",
+    "startHour": 17,
+    "endHour": 19,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "open-studio"
+  },
+  {
+    "id": "booking-9",
+    "spaceId": "space-1",
+    "title": "Handmade Paper Workshop",
+    "date": "2026-03-14",
+    "startHour": 10,
+    "endHour": 13,
+    "bookedBy": "Karen Olson",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-10",
+    "spaceId": "space-1",
+    "title": "Kids Art: Mixed Media Collage",
+    "date": "2026-03-15",
+    "startHour": 10,
+    "endHour": 11,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-11",
+    "spaceId": "space-4",
+    "title": "Gallery Reception: Spring Show",
+    "date": "2026-03-20",
+    "startHour": 17,
+    "endHour": 20,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "exhibition"
+  },
+  {
+    "id": "booking-12",
+    "spaceId": "space-3",
+    "title": "Embroidery Workshop: Spring Florals",
+    "date": "2026-03-18",
+    "startHour": 18,
+    "endHour": 20,
+    "bookedBy": "Colleen Ross",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-13",
+    "spaceId": "space-5",
+    "title": "Coworking Day",
+    "date": "2026-03-03",
+    "startHour": 9,
+    "endHour": 17,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "coworking"
+  },
+  {
+    "id": "booking-14",
+    "spaceId": "space-2",
+    "title": "Intro to Screen Printing",
+    "date": "2026-03-22",
+    "startHour": 10,
+    "endHour": 13,
+    "bookedBy": "Morgan Tidewater",
+    "purpose": "workshop"
+  },
+  {
+    "id": "booking-15",
+    "spaceId": "space-1",
+    "title": "Open Studio: Sunday Drop-In",
+    "date": "2026-03-22",
+    "startHour": 13,
+    "endHour": 16,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "open-studio"
+  },
+  {
+    "id": "booking-16",
+    "spaceId": "space-1",
+    "title": "Volunteer Work Session: Spring Cleaning",
+    "date": "2026-03-29",
+    "startHour": 10,
+    "endHour": 13,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "community"
+  },
+  {
+    "id": "booking-17",
+    "spaceId": "space-4",
+    "title": "Youth Art Show Opening",
+    "date": "2026-03-28",
+    "startHour": 16,
+    "endHour": 18,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "exhibition"
+  },
+  {
+    "id": "booking-18",
+    "spaceId": "space-5",
+    "title": "Coworking Day",
+    "date": "2026-03-10",
+    "startHour": 9,
+    "endHour": 17,
+    "bookedBy": "Heart of Ellsworth",
+    "purpose": "coworking"
+  }
+]

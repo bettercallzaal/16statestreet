@@ -1,0 +1,120 @@
+{
+  "spaces": [
+    {
+      "id": "space-1",
+      "name": "Main Studio",
+      "floor": "2nd Floor",
+      "capacity": 20,
+      "description": "Open-plan studio with natural light, work tables, easels, and a utility sink. The primary space for workshops, open studios, and large group sessions.",
+      "amenities": ["Work tables", "Easels", "Utility sink", "Natural light", "Whiteboard"],
+      "hourlyRate": 0,
+      "color": "#f43f5e"
+    },
+    {
+      "id": "space-2",
+      "name": "Print Lab",
+      "floor": "2nd Floor",
+      "capacity": 8,
+      "description": "Dedicated printmaking space equipped with gel plates, a small press, and drying racks. Ventilated for ink and solvent use.",
+      "amenities": ["Gel plates", "Printing press", "Drying racks", "Ventilation", "Ink station"],
+      "hourlyRate": 10,
+      "color": "#3b82f6"
+    },
+    {
+      "id": "space-3",
+      "name": "Fiber Arts Room",
+      "floor": "2nd Floor",
+      "capacity": 10,
+      "description": "Cozy room outfitted with looms, sewing machines, and cutting tables for textile and fiber arts projects.",
+      "amenities": ["Floor looms", "Sewing machines", "Cutting tables", "Iron station", "Yarn storage"],
+      "hourlyRate": 10,
+      "color": "#a855f7"
+    },
+    {
+      "id": "space-4",
+      "name": "Gallery Space",
+      "floor": "1st Floor",
+      "capacity": 40,
+      "description": "Street-level gallery with track lighting and movable walls. Used for exhibitions, receptions, community meetings, and performances.",
+      "amenities": ["Track lighting", "Movable walls", "PA system hookup", "Street access", "Display pedestals"],
+      "hourlyRate": 25,
+      "color": "#f59e0b"
+    },
+    {
+      "id": "space-5",
+      "name": "Coworking Nook",
+      "floor": "1st Floor",
+      "capacity": 6,
+      "description": "Quiet workspace with individual desks, power outlets, and Wi-Fi. Available for drop-in coworking and small meetings.",
+      "amenities": ["6 desks", "Power outlets", "Wi-Fi", "Coffee station", "Bookshelf"],
+      "hourlyRate": 5,
+      "color": "#10b981"
+    }
+  ],
+  "equipment": [
+    {
+      "id": "equip-1",
+      "name": "Screen Printing Press",
+      "location": "Print Lab",
+      "status": "available",
+      "returnDate": null,
+      "checkedOutBy": null
+    },
+    {
+      "id": "equip-2",
+      "name": "Sewing Machine #1",
+      "location": "Fiber Arts Room",
+      "status": "available",
+      "returnDate": null,
+      "checkedOutBy": null
+    },
+    {
+      "id": "equip-3",
+      "name": "Sewing Machine #2",
+      "location": "Fiber Arts Room",
+      "status": "checked-out",
+      "returnDate": "2026-03-10",
+      "checkedOutBy": "Colleen Ross"
+    },
+    {
+      "id": "equip-4",
+      "name": "Sewing Machine #3",
+      "location": "Fiber Arts Room",
+      "status": "available",
+      "returnDate": null,
+      "checkedOutBy": null
+    },
+    {
+      "id": "equip-5",
+      "name": "Pottery Wheel",
+      "location": "Main Studio",
+      "status": "available",
+      "returnDate": null,
+      "checkedOutBy": null
+    },
+    {
+      "id": "equip-6",
+      "name": "Floor Loom",
+      "location": "Fiber Arts Room",
+      "status": "checked-out",
+      "returnDate": "2026-03-15",
+      "checkedOutBy": "Taylor Bridgeway"
+    },
+    {
+      "id": "equip-7",
+      "name": "Projector & Screen",
+      "location": "Gallery Space",
+      "status": "available",
+      "returnDate": null,
+      "checkedOutBy": null
+    },
+    {
+      "id": "equip-8",
+      "name": "PA System",
+      "location": "Gallery Space",
+      "status": "available",
+      "returnDate": null,
+      "checkedOutBy": null
+    }
+  ]
+}

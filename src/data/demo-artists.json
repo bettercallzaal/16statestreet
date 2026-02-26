@@ -1,0 +1,122 @@
+[
+  {
+    "id": "artist-1",
+    "name": "Karin Otto",
+    "role": "resident",
+    "medium": ["Printmaking", "Gelatin Printing"],
+    "bio": "Karin is a printmaker and teaching artist specializing in gelatin plate mono-printing. She leads regular workshops at Heart of Ellsworth exploring botanical forms, layering techniques, and experimental print methods. Her work has been exhibited throughout Downeast Maine.",
+    "website": "",
+    "instagram": "",
+    "upcomingWorkshopCount": 4,
+    "pastWorkshopCount": 12,
+    "joinedDate": "2024-09-01"
+  },
+  {
+    "id": "artist-2",
+    "name": "Colleen Ross",
+    "role": "resident",
+    "medium": ["Fiber Arts", "Embroidery"],
+    "bio": "Colleen is a fiber artist and embroidery instructor whose work blends traditional needlework with contemporary design. She teaches popular slow-stitch workshops at 16 State Street and maintains a small studio in the Fiber Arts Room.",
+    "website": "",
+    "instagram": "",
+    "upcomingWorkshopCount": 3,
+    "pastWorkshopCount": 8,
+    "joinedDate": "2024-10-15"
+  },
+  {
+    "id": "artist-3",
+    "name": "Karen Olson",
+    "role": "instructor",
+    "medium": ["Papermaking"],
+    "bio": "Karen teaches papermaking workshops using locally sourced plant fibers. Her classes cover sheet forming, pulp preparation, and botanical inclusions. She has been making handmade paper for over fifteen years.",
+    "website": "",
+    "instagram": "",
+    "upcomingWorkshopCount": 2,
+    "pastWorkshopCount": 5,
+    "joinedDate": "2025-01-10"
+  },
+  {
+    "id": "artist-4",
+    "name": "Jamie Renault",
+    "role": "resident",
+    "medium": ["Ceramics", "Pottery"],
+    "bio": "Jamie is a ceramic artist working primarily in functional stoneware. They create wheel-thrown vessels and sculptural pieces inspired by the Maine coast. Jamie runs the pottery wheel sessions and kiln firing workshops.",
+    "website": "https://jamierenault.studio",
+    "instagram": "jamierenault_ceramics",
+    "upcomingWorkshopCount": 2,
+    "pastWorkshopCount": 6,
+    "joinedDate": "2024-11-01"
+  },
+  {
+    "id": "artist-5",
+    "name": "Morgan Tidewater",
+    "role": "instructor",
+    "medium": ["Screen Printing", "Printmaking"],
+    "bio": "Morgan brings a background in graphic design to their screen printing practice. They teach intro and advanced screenprint workshops, covering photo emulsion, multi-color registration, and poster design.",
+    "website": "",
+    "instagram": "morgan.tidewater",
+    "upcomingWorkshopCount": 1,
+    "pastWorkshopCount": 4,
+    "joinedDate": "2025-02-01"
+  },
+  {
+    "id": "artist-6",
+    "name": "Sage Whitfield",
+    "role": "community",
+    "medium": ["Painting", "Watercolor"],
+    "bio": "Sage is a plein air painter who captures the landscapes of Hancock County in watercolor and gouache. A regular at Open Studio sessions, Sage mentors new painters and organizes outdoor painting meetups in warmer months.",
+    "website": "https://sagewhitfield.art",
+    "instagram": "sage_paints",
+    "upcomingWorkshopCount": 0,
+    "pastWorkshopCount": 2,
+    "joinedDate": "2025-03-01"
+  },
+  {
+    "id": "artist-7",
+    "name": "Quinn Haverly",
+    "role": "resident",
+    "medium": ["Woodworking", "Furniture"],
+    "bio": "Quinn is a furniture maker and woodworker focused on sustainable materials and traditional joinery. They maintain a small woodshop partnership with HoE and offer weekend workshops in spoon carving and basic joinery.",
+    "website": "",
+    "instagram": "quinnhaverly_wood",
+    "upcomingWorkshopCount": 1,
+    "pastWorkshopCount": 3,
+    "joinedDate": "2024-12-01"
+  },
+  {
+    "id": "artist-8",
+    "name": "River Eastman",
+    "role": "instructor",
+    "medium": ["Photography", "Digital"],
+    "bio": "River is a documentary photographer who teaches darkroom and digital photography at Heart of Ellsworth. Their work focuses on rural Maine communities and the working waterfront. River also manages the gallery exhibition schedule.",
+    "website": "https://rivereastman.photo",
+    "instagram": "river.eastman",
+    "upcomingWorkshopCount": 1,
+    "pastWorkshopCount": 7,
+    "joinedDate": "2024-08-15"
+  },
+  {
+    "id": "artist-9",
+    "name": "Avery Stonecrest",
+    "role": "community",
+    "medium": ["Digital Fabrication", "Laser Cutting"],
+    "bio": "Avery brings a maker-tech perspective to the HoE community. They help maintain the digital fabrication tools and teach intro sessions on laser cutting, vinyl cutting, and basic CAD design for artists and small businesses.",
+    "website": "",
+    "instagram": "avery.makes",
+    "upcomingWorkshopCount": 1,
+    "pastWorkshopCount": 3,
+    "joinedDate": "2025-01-20"
+  },
+  {
+    "id": "artist-10",
+    "name": "Taylor Bridgeway",
+    "role": "instructor",
+    "medium": ["Textile Dyeing", "Fiber Arts"],
+    "bio": "Taylor specializes in natural dyeing techniques using plants and minerals native to Maine. They teach workshops on indigo dyeing, ice dyeing, and botanical printing on fabric. Their work explores color as a connection to place.",
+    "website": "",
+    "instagram": "taylor_dyes",
+    "upcomingWorkshopCount": 1,
+    "pastWorkshopCount": 4,
+    "joinedDate": "2025-02-15"
+  }
+]

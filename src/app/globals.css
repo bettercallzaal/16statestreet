@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+/* Safe area insets for notched devices */
+:root {
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+}
+
+/* Dark theme base — Heart of Ellsworth palette */
+:root {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-hover: #334155;
+  --accent: #f43f5e;
+  --accent-hover: #fb7185;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  padding-top: var(--safe-area-top);
+  padding-bottom: var(--safe-area-bottom);
+}
+
+/* Prevent iOS auto-zoom on input focus (inputs must be >= 16px) */
+input, select, textarea {
+  font-size: 16px;
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Slate 750 custom shade for card hover (between 700 and 800) */
+.hover\:bg-slate-750:hover {
+  background-color: #283548;
+}
+
+/* Conditionally import mapbox styles only when map is used */
+.mapboxgl-popup {
+  max-width: calc(100vw - 1rem) !important;
+}
+
+.map-popup .mapboxgl-popup-content {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+  max-width: calc(100vw - 2rem);
+}
+
+.map-popup .mapboxgl-popup-tip {
+  border-top-color: #1e293b;
+}
+
+.map-popup .mapboxgl-popup-close-btn {
+  display: none;
+}
+
+.map-popup .mapboxgl-popup-content ::-webkit-scrollbar {
+  width: 4px;
+}
+
+.map-popup .mapboxgl-popup-content ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.map-popup .mapboxgl-popup-content ::-webkit-scrollbar-thumb {
+  background-color: #475569;
+  border-radius: 2px;
+}
+
+/* Hide scrollbar for filter rows while keeping scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Announcement banner horizontal scroll */
+.announcement-scroll {
+  animation: announcement-scroll-left 30s linear infinite;
+}
+
+@keyframes announcement-scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Shrink Mapbox logo */
+.mapboxgl-ctrl-logo {
+  transform: scale(0.65);
+  transform-origin: bottom left;
+}
+
+.mapboxgl-ctrl-attrib.mapboxgl-compact {
+  transform: scale(0.65);
+  transform-origin: bottom right;
+}
+
+/* RSVP success animation */
+@keyframes rsvp-check {
+  0% { transform: scale(0); opacity: 0; }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.rsvp-check-animate {
+  animation: rsvp-check 0.4s ease-out forwards;
+}
+
+/* Calendar day hover */
+.calendar-day:hover {
+  background-color: #1e293b;
+}
+
+.calendar-day.has-events:hover {
+  background-color: #334155;
+}

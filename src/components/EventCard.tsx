@@ -1,0 +1,356 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { MapPin, Calendar, Users, X, Link, Check } from 'lucide-react';
+import type { ETHDenverEvent, ReactionEmoji } from '@/lib/types';
+import { trackEventClick } from '@/lib/analytics';
+import { AddressLink } from './AddressLink';
+import { StarButton } from './StarButton';
+import { TagBadge } from './TagBadge';
+import { OGImage } from './OGImage';
+import { EmojiReactions } from './EmojiReactions';
+import { CommentSection } from './CommentSection';
+
+interface FriendInfo {
+  userId: string;
+  displayName: string;
+}
+
+interface EventCardProps {
+  event: ETHDenverEvent;
+  isInItinerary?: boolean;
+  onItineraryToggle?: (eventId: string) => void;
+  friendsCount?: number;
+  friendsGoing?: FriendInfo[];
+  checkedInFriends?: FriendInfo[];
+  checkInCount?: number;
+  reactions?: { emoji: ReactionEmoji; count: number; reacted: boolean }[];
+  onToggleReaction?: (eventId: string, emoji: ReactionEmoji) => void;
+  commentCount?: number;
+  isRegistered?: boolean;
+  attendeeCount?: number;
+  onCardClick?: (event: ETHDenverEvent) => void;
+}
+
+function FriendsGoingModal({
+  eventName,
+  friends,
+  onClose,
+  title = 'Friends Going',
+  accentColor = 'blue',
+}: {
+  eventName: string;
+  friends: FriendInfo[];
+  onClose: () => void;
+  title?: string;
+  accentColor?: 'blue' | 'green';
+}) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
+  const avatarBg = accentColor === 'green' ? 'bg-green-500/20' : 'bg-blue-500/20';
+  const avatarText = accentColor === 'green' ? 'text-green-400' : 'text-blue-400';
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/60" />
+      <div
+        className="relative bg-slate-800 border border-slate-700 rounded-xl shadow-2xl w-full max-w-sm"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-700">
+          <div className="min-w-0 flex-1">
+            <h3 className="text-sm font-bold text-white">{title}</h3>
+            <p className="text-xs text-slate-400 truncate">{eventName}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1 text-slate-400 hover:text-white transition-colors cursor-pointer shrink-0 ml-2"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="overflow-y-auto max-h-[60vh] p-3 space-y-2">
+          {friends.map((friend) => (
+            <div
+              key={friend.userId}
+              className="flex items-center gap-3 px-3 py-2 rounded-lg bg-slate-750 hover:bg-slate-700 transition-colors"
+            >
+              <div className={`w-8 h-8 rounded-full ${avatarBg} flex items-center justify-center shrink-0`}>
+                <span className={`text-sm font-medium ${avatarText}`}>
+                  {friend.displayName[0]?.toUpperCase() ?? '?'}
+                </span>
+              </div>
+              <span className="text-sm text-white truncate">{friend.displayName}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+function formatFriendsText(friends: FriendInfo[]): string {
+  const names = friends.map((f) => f.displayName.split(' ')[0] || f.displayName);
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return `${names[0]} & ${names[1]}`;
+  if (names.length === 3) return `${names[0]}, ${names[1]} & ${names[2]}`;
+  return `${names[0]}, ${names[1]} +${names.length - 2} more`;
+}
+
+export function EventCard({
+  event,
+  isInItinerary = false,
+  onItineraryToggle,
+  friendsCount,
+  friendsGoing,
+  checkedInFriends,
+  checkInCount,
+  reactions,
+  onToggleReaction,
+  commentCount,
+  isRegistered,
+  attendeeCount,
+  onCardClick,
+}: EventCardProps) {
+  const [showFriendsModal, setShowFriendsModal] = useState(false);
+  const [showCheckedInModal, setShowCheckedInModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!event.link) return;
+    navigator.clipboard.writeText(event.link).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  const handleCardClick = () => {
+    if (onCardClick) {
+      onCardClick(event);
+    }
+  };
+
+  const timeDisplay = event.isAllDay
+    ? 'All Day'
+    : `${event.startTime}${event.endTime ? ` - ${event.endTime}` : ''}`;
+
+  return (
+    <div
+      className={`bg-slate-800 border border-slate-700 rounded-lg p-4 hover:bg-slate-750 hover:border-slate-600 transition-colors group flex gap-4 overflow-hidden ${onCardClick ? 'cursor-pointer' : ''}`}
+      onClick={handleCardClick}
+    >
+      {/* Left: cover image */}
+      {event.link && <OGImage url={event.link} eventId={event.id} />}
+
+      {/* Right: event details */}
+      <div className="flex-1 min-w-0">
+        {/* Top row: Star, Name */}
+        <div className="flex items-start gap-2">
+          {onItineraryToggle ? (
+            <div onClick={(e) => e.stopPropagation()}>
+              <StarButton
+                eventId={event.id}
+                isStarred={isInItinerary}
+                onToggle={onItineraryToggle}
+                friendsCount={friendsCount}
+              />
+            </div>
+          ) : (
+            <div className="w-5 shrink-0" />
+          )}
+
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-white text-sm sm:text-base leading-tight">
+              {event.link && !onCardClick ? (
+                <a
+                  href={event.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-rose-400 transition-colors"
+                  onClick={(e) => { e.stopPropagation(); trackEventClick(event.name, event.link!); }}
+                >
+                  {event.name}
+                </a>
+              ) : (
+                <span className={onCardClick ? 'hover:text-rose-400 transition-colors' : ''}>
+                  {event.name}
+                </span>
+              )}
+            </h3>
+            {event.organizer && (
+              <p className="text-slate-500 text-xs mt-0.5">{event.organizer}</p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0" onClick={(e) => e.stopPropagation()}>
+            {/* Registered badge */}
+            {isRegistered && (
+              <span className="flex items-center gap-0.5 text-[10px] font-bold text-rose-400 bg-rose-500/15 px-1.5 py-0.5 rounded-full">
+                <Check className="w-3 h-3" />
+                Going
+              </span>
+            )}
+
+            {/* Attendee count */}
+            {(attendeeCount ?? 0) > 0 && (
+              <span className="flex items-center gap-0.5 text-[10px] text-slate-500">
+                <Users className="w-3 h-3" />
+                {attendeeCount}
+              </span>
+            )}
+
+            {event.link && (
+              <button
+                onClick={handleCopyLink}
+                className="p-1 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                aria-label="Copy event link"
+                title="Copy link"
+              >
+                {copied ? (
+                  <Check className="w-3.5 h-3.5 text-green-400" />
+                ) : (
+                  <Link className="w-3.5 h-3.5" />
+                )}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Date + Time */}
+        <div className="relative w-fit mt-1">
+          <p className="text-slate-400 text-sm flex items-start gap-1">
+            <Calendar className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+            <span>{event.date} · {timeDisplay}</span>
+          </p>
+          {(checkInCount ?? 0) > 0 && (
+            <span className="absolute -top-1 -right-3 min-w-[16px] h-[16px] flex items-center justify-center rounded-full bg-green-500 text-white text-[9px] font-bold px-0.5 pointer-events-none">
+              {checkInCount}
+            </span>
+          )}
+        </div>
+
+        {/* Capacity bar */}
+        {event.capacity && (
+          <div className="mt-1.5 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+            <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-rose-500 rounded-full transition-all"
+                style={{ width: `${Math.min(100, ((event.registeredCount ?? 0) / event.capacity) * 100)}%` }}
+              />
+            </div>
+            <span className="text-[10px] text-slate-500 shrink-0">
+              {event.registeredCount ?? 0}/{event.capacity}
+            </span>
+          </div>
+        )}
+
+        {/* Address */}
+        {event.address && (
+          <div onClick={(e) => e.stopPropagation()}>
+            <AddressLink address={event.address} navAddress={event.matchedAddress} lat={event.lat} lng={event.lng}
+              eventId={event.id} eventName={event.name}
+              className="w-full text-slate-500 hover:text-slate-300 text-sm mt-1 flex items-start gap-1 overflow-hidden transition-colors min-w-0">
+              <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+              <span className="truncate">{event.address}</span>
+            </AddressLink>
+          </div>
+        )}
+
+        {/* Badges row */}
+        {event.tags.length > 0 && (
+          <div className="flex flex-wrap items-center gap-1.5 mt-3" onClick={(e) => e.stopPropagation()}>
+            {event.tags.map((tag) => (
+              <TagBadge key={tag} tag={tag} />
+            ))}
+          </div>
+        )}
+
+        {/* Emoji reactions */}
+        {onToggleReaction && (
+          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+            <EmojiReactions
+              eventId={event.id}
+              reactions={reactions}
+              onToggle={onToggleReaction}
+            />
+          </div>
+        )}
+
+        {/* Friends going row */}
+        {friendsGoing && friendsGoing.length > 0 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowFriendsModal(true);
+            }}
+            className="flex items-center gap-2 mt-2 px-2 py-1.5 -mx-1 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer group/friends w-fit"
+          >
+            <Users className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <span className="text-xs text-blue-400 group-hover/friends:text-blue-300 transition-colors">
+              {formatFriendsText(friendsGoing)}
+            </span>
+          </button>
+        )}
+
+        {/* Friends checked in row (green) */}
+        {checkedInFriends && checkedInFriends.length > 0 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowCheckedInModal(true);
+            }}
+            className="flex items-center gap-2 mt-1 px-2 py-1.5 -mx-1 rounded-lg hover:bg-slate-700/50 transition-colors cursor-pointer group/checkin w-fit"
+          >
+            <MapPin className="w-3.5 h-3.5 text-green-400 shrink-0" />
+            <span className="text-xs text-green-400 group-hover/checkin:text-green-300 transition-colors">
+              {formatFriendsText(checkedInFriends)} checked in
+            </span>
+          </button>
+        )}
+
+        {/* Note */}
+        {event.note && (
+          <p className="text-slate-600 text-xs mt-1 italic truncate">{event.note}</p>
+        )}
+
+        {/* Comments */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <CommentSection eventId={event.id} commentCount={commentCount} />
+        </div>
+      </div>
+
+      {/* Friends going modal */}
+      {showFriendsModal && friendsGoing && friendsGoing.length > 0 && (
+        <FriendsGoingModal
+          eventName={event.name}
+          friends={friendsGoing}
+          onClose={() => setShowFriendsModal(false)}
+        />
+      )}
+
+      {/* Friends checked in modal (green) */}
+      {showCheckedInModal && checkedInFriends && checkedInFriends.length > 0 && (
+        <FriendsGoingModal
+          eventName={event.name}
+          friends={checkedInFriends}
+          onClose={() => setShowCheckedInModal(false)}
+          title="Friends Checked In"
+          accentColor="green"
+        />
+      )}
+    </div>
+  );
+}
