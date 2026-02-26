@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import clsx from 'clsx';
-import { X, SlidersHorizontal, Zap, Users, MapPin, CalendarDays } from 'lucide-react';
+import { X, SlidersHorizontal, Zap, Users, MapPin, CalendarDays, DollarSign } from 'lucide-react';
 import type { FilterState } from '@/lib/types';
 import { VIBE_COLORS, getTabConfig } from '@/lib/constants';
 import { TAG_ICONS } from './TagBadge';
@@ -29,6 +29,8 @@ interface FilterBarProps {
   eventCount: number;
   quickFilter?: string | null;
   onQuickFilter?: (filter: string | null) => void;
+  activeCategory?: string | null;
+  onCategorySelect?: (category: string | null) => void;
 }
 
 export function FilterBar({
@@ -50,22 +52,62 @@ export function FilterBar({
   eventCount,
   quickFilter,
   onQuickFilter,
+  activeCategory,
+  onCategorySelect,
 }: FilterBarProps) {
   const [expanded, setExpanded] = useState(false);
   const [confOpen, setConfOpen] = useState(false);
   const confBtnRef = useRef<HTMLButtonElement | null>(null);
 
   const quickFilters = [
-    { id: 'today', label: 'Today', icon: CalendarDays },
+    { id: 'all', label: 'All Events', icon: CalendarDays },
+    { id: 'today', label: 'Today' },
     { id: 'this-week', label: 'This Week' },
+    { id: 'next-week', label: 'Next Week' },
     { id: 'this-weekend', label: 'Weekend' },
     { id: 'this-month', label: 'This Month' },
+    { id: 'free', label: 'Free', icon: DollarSign },
   ];
+
+  // Count total active filters (including quick filter, category, search, vibes)
+  const hasAnyFilter = activeFilterCount > 0 || (quickFilter && quickFilter !== 'all') || activeCategory || searchQuery;
+
+  // Build list of active filter chips for the summary bar
+  const activeChips: { label: string; onRemove: () => void }[] = [];
+
+  if (quickFilter && quickFilter !== 'all') {
+    const qf = quickFilters.find((q) => q.id === quickFilter);
+    if (qf) activeChips.push({ label: qf.label, onRemove: () => onQuickFilter?.(null) });
+  }
+
+  if (activeCategory && onCategorySelect) {
+    activeChips.push({ label: activeCategory, onRemove: () => onCategorySelect(null) });
+  }
+
+  if (searchQuery) {
+    activeChips.push({ label: `"${searchQuery}"`, onRemove: () => onSearchChange('') });
+  }
+
+  for (const vibe of filters.vibes) {
+    activeChips.push({ label: vibe, onRemove: () => onToggleVibe(vibe) });
+  }
+
+  if (filters.nowMode) {
+    activeChips.push({ label: 'Happening Now', onRemove: onToggleNowMode });
+  }
+
+  const handleClearAll = () => {
+    trackClearFilters();
+    onClearFilters();
+    onQuickFilter?.(null);
+    if (onCategorySelect) onCategorySelect(null);
+    onSearchChange('');
+  };
 
   return (
     <div className="relative bg-slate-900 border-b border-slate-800 z-30">
-      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 space-y-3">
-        {/* Top row: Conference tabs + Filter toggle */}
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 py-3 space-y-2.5">
+        {/* Top row: Conference tabs + Search + Filter toggle */}
         <div className="flex items-center gap-3">
           {/* Conference selector — only show if multiple conferences */}
           {availableConferences.length > 1 && (
@@ -182,20 +224,53 @@ export function FilterBar({
         {/* Quick filter chips */}
         {onQuickFilter && (
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
-            {quickFilters.map((qf) => (
+            {quickFilters.map((qf) => {
+              const isActive = qf.id === 'all'
+                ? !quickFilter || quickFilter === 'all'
+                : quickFilter === qf.id;
+              return (
+                <button
+                  key={qf.id}
+                  onClick={() => onQuickFilter(qf.id === 'all' ? null : (quickFilter === qf.id ? null : qf.id))}
+                  className={clsx(
+                    'shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer whitespace-nowrap',
+                    isActive
+                      ? 'bg-rose-500 text-white'
+                      : 'bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700 border border-slate-700'
+                  )}
+                >
+                  {qf.label}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Active filters summary bar — always visible when filters are active */}
+        {activeChips.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-slate-500 shrink-0">
+              {eventCount} result{eventCount !== 1 ? 's' : ''}
+            </span>
+            <div className="w-px h-4 bg-slate-700 shrink-0" />
+            {activeChips.map((chip, i) => (
               <button
-                key={qf.id}
-                onClick={() => onQuickFilter(quickFilter === qf.id ? null : qf.id)}
-                className={clsx(
-                  'shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer whitespace-nowrap',
-                  quickFilter === qf.id
-                    ? 'bg-rose-500 text-white'
-                    : 'bg-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-700 border border-slate-700'
-                )}
+                key={`${chip.label}-${i}`}
+                onClick={chip.onRemove}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-600 text-xs text-slate-300 hover:border-rose-500/50 hover:text-white transition-colors cursor-pointer group"
               >
-                {qf.label}
+                {chip.label}
+                <X className="w-3 h-3 text-slate-500 group-hover:text-rose-400 transition-colors" />
               </button>
             ))}
+            {activeChips.length > 1 && (
+              <button
+                onClick={handleClearAll}
+                className="flex items-center gap-1 text-xs text-rose-400 hover:text-rose-300 font-medium transition-colors cursor-pointer px-1"
+              >
+                Clear all
+              </button>
+            )}
           </div>
         )}
 
@@ -281,7 +356,7 @@ export function FilterBar({
             {availableTypes.length > 0 && (
               <div>
                 <div className="text-xs uppercase tracking-wider text-slate-400 mb-1">Type</div>
-                <div className="overflow-x-auto flex gap-2 pb-1">
+                <div className="overflow-x-auto flex flex-wrap gap-2 pb-1">
                   {availableTypes.map((vibe) => {
                     const isActive = filters.vibes.includes(vibe);
                     const vibeColor = VIBE_COLORS[vibe] || VIBE_COLORS['default'];
@@ -291,13 +366,14 @@ export function FilterBar({
                         key={vibe}
                         onClick={() => { trackTagToggle(vibe, !filters.vibes.includes(vibe)); onToggleVibe(vibe); }}
                         className={clsx(
-                          'shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer',
+                          'shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer',
                           isActive ? 'text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                         )}
                         style={isActive ? { backgroundColor: vibeColor } : undefined}
                       >
                         {Icon && <Icon className="w-3.5 h-3.5" />}
                         {vibe}
+                        {isActive && <X className="w-3 h-3 ml-0.5 opacity-70" />}
                       </button>
                     );
                   })}
@@ -309,7 +385,7 @@ export function FilterBar({
             {availableVibes.length > 0 && (
               <div>
                 <div className="text-xs uppercase tracking-wider text-slate-400 mb-1">Tags</div>
-                <div className="overflow-x-auto flex gap-2 pb-1">
+                <div className="overflow-x-auto flex flex-wrap gap-2 pb-1">
                   {availableVibes.map((vibe) => {
                     const isActive = filters.vibes.includes(vibe);
                     const vibeColor = VIBE_COLORS[vibe] || VIBE_COLORS['default'];
@@ -319,30 +395,18 @@ export function FilterBar({
                         key={vibe}
                         onClick={() => { trackTagToggle(vibe, !filters.vibes.includes(vibe)); onToggleVibe(vibe); }}
                         className={clsx(
-                          'shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap cursor-pointer',
+                          'shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap cursor-pointer',
                           isActive ? 'text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                         )}
                         style={isActive ? { backgroundColor: vibeColor } : undefined}
                       >
                         {Icon && <Icon className="w-3.5 h-3.5" />}
                         {vibe}
+                        {isActive && <X className="w-3 h-3 ml-0.5 opacity-70" />}
                       </button>
                     );
                   })}
                 </div>
-              </div>
-            )}
-
-            {/* Clear all */}
-            {activeFilterCount > 0 && (
-              <div className="flex items-center">
-                <button
-                  onClick={() => { trackClearFilters(); onClearFilters(); }}
-                  className="flex items-center gap-1.5 text-rose-400 hover:text-rose-300 text-sm font-medium whitespace-nowrap transition-colors cursor-pointer"
-                >
-                  <X className="w-3.5 h-3.5" />
-                  Clear all
-                </button>
               </div>
             )}
           </div>

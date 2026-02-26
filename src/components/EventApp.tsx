@@ -383,6 +383,21 @@ export function EventApp({ showHomeLink }: EventAppProps = {}) {
       return events.filter((e) => e.dateISO.startsWith(monthPrefix));
     }
 
+    if (quickFilter === 'next-week') {
+      const dayOfWeek = now.getDay();
+      const startOfNextWeek = new Date(now);
+      startOfNextWeek.setDate(now.getDate() + (7 - dayOfWeek));
+      const endOfNextWeek = new Date(startOfNextWeek);
+      endOfNextWeek.setDate(startOfNextWeek.getDate() + 6);
+      const startISO = `${startOfNextWeek.getFullYear()}-${String(startOfNextWeek.getMonth() + 1).padStart(2, '0')}-${String(startOfNextWeek.getDate()).padStart(2, '0')}`;
+      const endISO = `${endOfNextWeek.getFullYear()}-${String(endOfNextWeek.getMonth() + 1).padStart(2, '0')}-${String(endOfNextWeek.getDate()).padStart(2, '0')}`;
+      return events.filter((e) => e.dateISO >= startISO && e.dateISO <= endISO);
+    }
+
+    if (quickFilter === 'free') {
+      return events.filter((e) => e.isFree || e.cost === 'Free' || e.cost === '' || !e.cost);
+    }
+
     return events;
   }, [events, quickFilter]);
 
@@ -496,6 +511,8 @@ export function EventApp({ showHomeLink }: EventAppProps = {}) {
           eventCount={filteredEvents.length}
           quickFilter={quickFilter}
           onQuickFilter={setQuickFilter}
+          activeCategory={activeCategory}
+          onCategorySelect={setActiveCategory}
         />
       </div>
 
